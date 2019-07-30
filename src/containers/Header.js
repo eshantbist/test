@@ -11,7 +11,7 @@ class Header extends Component{
     const text = "POOJA'S AVAILABLE";
     const {ListReducer:{isListView}} = this.props;
     return(
-      <SafeAreaView style={{flex:1,backgroundColor:'white',borderBottomWidth:0.2,justifyContent:'space-between',flexDirection:'row'}}>
+      <SafeAreaView style={{backgroundColor:'white',borderBottomWidth:0.2,justifyContent:'space-between',flexDirection:'row'}}>
         {isListView
           ?
             <TouchableOpacity style={styles.iconTouch} onPress={()=>this.props.change_list_view(false)}>

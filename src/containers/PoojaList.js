@@ -28,7 +28,10 @@ import {bindActionCreators} from 'redux'
 import ModalGenerator from './ModalGenerator'
 import {availablePooja} from '../config'
 import styles from '../styles/PoojaListStyle'
+import SQLite from 'react-native-sqlite-storage';
+import NetInfo from "@react-native-community/netinfo";
 
+let db;
 
 const formatData = (data, numColumns) => {
   const numberOfFullRows = Math.floor(data.length / numColumns);
@@ -44,6 +47,85 @@ const formatData = (data, numColumns) => {
 
 const numColumns = 3;
 class PoojaList extends React.Component {
+
+  // componentDidMount=async()=> {
+  //   db = SQLite.openDatabase({ name: "appDB", createFromLocation: "~MyPooja.db" },
+  //       this.openSuccess, this.openError);
+  //   /*select query*/
+  //   db.transaction(tx => {
+  //     tx.executeSql('SELECT * FROM MyPooja', [], (tx, results) => {
+  //       var temp = [];
+  //       for (let i = 0; i < results.rows.length; ++i) {
+  //         temp.push(results.rows.item(i));
+  //       }
+  //       console.log(temp);
+  //     });
+  //   });
+    /*select query*/
+
+    /*Insert Query*/
+    // const pooja_name = 'Test Name';
+    // const pooja_amount = 51;
+    // const person_name = 'Eshant Bist';
+    // const nakshatra = 'nakshatra';
+    // const gotra = 'gotra';
+    // const other_info = 'other info';
+    // const sync =false;
+    // db.transaction(function(tx) {
+    //         tx.executeSql(
+    //           'INSERT INTO MyPooja (pooja_name, pooja_amount, person_name,nakshatra,gotra,other_info,sync ) VALUES (?,?,?,?,?,?,?)',
+    //           [pooja_name, pooja_amount, person_name, nakshatra, gotra, other_info, sync],
+    //           (tx, results) => {
+    //             console.log('Results', results);
+    //             if (results.rowsAffected > 0) {
+    //               alert('Successfully uploaded');
+    //             } else {
+    //               alert('Registration Failed');
+    //             }
+    //           }
+    //         );
+    //       });
+    /*Insert Query*/
+
+    /*Delete Query*/
+    // const person_name = 'Eshant Bist';
+    // db.transaction(tx => {
+    //   tx.executeSql(
+    //     'DELETE FROM  MyPooja where person_name=?',
+    //     [person_name],
+    //     (tx, results) => {
+    //       console.log('Results', results.rowsAffected);
+    //       if (results.rowsAffected > 0) {
+    //         alert('Successfully deleted');
+    //       } else {
+    //         alert('Please insert a valid User Id');
+    //       }
+    //     }
+    //   );
+    // });
+    /*Delete Query*/
+  //}
+
+  // componentDidMount() {
+  //   NetInfo.addEventListener('connectionChange', this._handleConnectionChange);
+  // }
+  //
+  // componentWillUnmount() {
+  //   NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
+  // }
+  //
+  // _handleConnectionChange = (isConnected) => {
+  //   console.log("NetInfo Changed");
+  //   console.log(isConnected);
+  // };
+  //
+  // openSuccess() {
+  //   console.log("Database is opened");
+  // }
+  //
+  // openError(err) {
+  //   console.log("error: ", err);
+  // }
 
   showDetail=(item)=>{
     this.props.showFormModal(true);
