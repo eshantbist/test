@@ -32,6 +32,31 @@ const styles = StyleSheet.create({
     borderColor:'white',
     padding:10,
     backgroundColor:'white'
+  },
+  offlineContainer: {
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  offlineImage: {
+    width: '20%',
+    height: '10%'
+  },
+  noInternetText:{
+    color:'#666666',
+    fontSize:20,
+    marginHorizontal:30
+  },
+  retryButton:{
+    borderWidth:0.5,
+    marginTop:20,
+    padding:8,
+    borderColor:'#404040',
+    borderRadius:5
+  },
+  retryButtonText:{
+    fontSize:20,
+    color:'#666666'
   }
 });
 

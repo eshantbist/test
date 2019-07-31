@@ -1,14 +1,17 @@
 import React, {Component} from 'react';
 import AppStack from './AppStack';
 import {Provider} from 'react-redux';
-import {createStore} from 'redux';
-import rootReducer from './src/reducers';
+import {createStore,applyMiddleware} from 'redux';
+import reducers from './src/reducers';
+import thunk from 'redux-thunk';
 console.disableYellowBox = true;
+
+const createStoreWithMiddleWare=applyMiddleware(thunk)(createStore);
 
 export default class App extends Component {
   render() {
     return(
-      <Provider store={createStore(rootReducer)}>
+      <Provider store={createStoreWithMiddleWare(reducers)}>
           <AppStack/>
       </Provider>
     );

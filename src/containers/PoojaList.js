@@ -17,12 +17,13 @@ import {
   Dimensions,
   TouchableWithoutFeedback,
   TextInput,
-  Button
+  Button,
+  Image
 } from 'react-native';
 import {PoojaListItem} from '../components/PoojaListItem'
 import {PoojaBlockItem} from '../components/PoojaBlockItem'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {getPooja,showFormModal} from '../actions'
+import {getPooja,showFormModal,setInternetValues} from '../actions'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import ModalGenerator from './ModalGenerator'
@@ -106,18 +107,40 @@ class PoojaList extends React.Component {
     /*Delete Query*/
   //}
 
-  // componentDidMount() {
-  //   NetInfo.addEventListener('connectionChange', this._handleConnectionChange);
-  // }
-  //
-  // componentWillUnmount() {
-  //   NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
-  // }
-  //
-  // _handleConnectionChange = (isConnected) => {
-  //   console.log("NetInfo Changed");
-  //   console.log(isConnected);
-  // };
+  componentDidMount() {
+    NetInfo.isConnected.fetch().then((isConnected) => {
+     NetInfo.isConnected.addEventListener(
+      'connectionChange',
+      this._handleConnectionChange
+   );
+});
+  }
+
+  _handleConnectionChange = (isConnected) => {
+    console.log(isConnected);
+    //this.props.setInternetValues();
+  };
+
+  componentWillUnmount() {
+    NetInfo.removeEventListener('connectionChange', this._handleConnectionChange);
+  }
+
+  retry=()=>{
+    NetInfo.getConnectionInfo().then((connectionInfo) => {
+      console.log(
+        'Initial, type: ' +
+          connectionInfo.type +
+          ', effectiveType: ' +
+          connectionInfo.effectiveType,
+      );
+      if(connectionInfo.type=='none'){
+        this.setState({offline:true});
+      }
+      else {
+        this.setState({offline:false})
+      }
+    });
+  }
   //
   // openSuccess() {
   //   console.log("Database is opened");
@@ -132,45 +155,58 @@ class PoojaList extends React.Component {
     this.props.getPooja(item);
   }
 
+  retry=()=>{
+    this.setState({offline:false})
+  }
+
   render() {
     const {ListReducer:{isListView}} = this.props;
-        return(
-          <SafeAreaView style={{flex:1}}>
-            {isListView
-              ?
-              <Container>
-                <Content>
-                  <List>
-                  <FlatList
-                    data={availablePooja}
-                    ref={(c) => {this.flatList = c;}}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item}) => <PoojaListItem showDetail={(item)=>this.showDetail(item)} item={item} />}
-                  />
-                  </List>
-                </Content>
-              </Container>
-              :
-              <FlatList
-                data={formatData(availablePooja, numColumns)}
-                style={styles.container}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) => <PoojaBlockItem numColumns={numColumns} showDetail={(item)=>this.showDetail(item)} item={item} />}
-                numColumns={numColumns}
-              />
-            }
-            <ModalGenerator />
-          </SafeAreaView>
-        )
+    const {InternetReducer:{internetState}} = this.props;
+    // if(internetState.isConnected == false || internetState.isInternetReachable == false ){
+    //     return(
+    //       <View style={styles.offlineContainer}>
+    //         <Image source={require('../img/oops.png')} resizeMode='contain' style={styles.offlineImage} />
+    //         <Text style={styles.noInternetText}>No Internet Connection found. Do you still want to use </Text>
+    //       </View>
+    //     )
+    //   }
+      return(
+        <SafeAreaView style={{flex:1}}>
+          {isListView
+            ?
+            <Container>
+              <Content>
+                <List>
+                <FlatList
+                  data={availablePooja}
+                  ref={(c) => {this.flatList = c;}}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item}) => <PoojaListItem showDetail={(item)=>this.showDetail(item)} item={item} />}
+                />
+                </List>
+              </Content>
+            </Container>
+            :
+            <FlatList
+              data={formatData(availablePooja, numColumns)}
+              style={styles.container}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => <PoojaBlockItem numColumns={numColumns} showDetail={(item)=>this.showDetail(item)} item={item} />}
+              numColumns={numColumns}
+            />
+          }
+          <ModalGenerator/>
+        </SafeAreaView>
+      )
    }
 }
 
 const mapStateToProps=(state)=>{
-  return {ListReducer:state.ListReducer};
+  return {ListReducer:state.ListReducer,InternetReducer:state.InternetReducer};
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({showFormModal,getPooja},dispatch)
+  return bindActionCreators({showFormModal,getPooja,setInternetValues},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(PoojaList);

@@ -14,18 +14,38 @@ import {
   Button,
   KeyboardAvoidingView
 } from 'react-native';
-import {getPooja,showFormModal} from '../actions'
+import {getPooja,showFormModal,savePoojaDetails} from '../actions'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import styles from '../styles/ModalGeneratorStyle'
 
 class ModalGenerator extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      phone_number:null,
+      name:'',
+      nakshatra:'',
+      gotra:'',
+      other_info:'',
+    }
+  }
+
+  onChangeText(key,value) {
+      this.setState({[key]:value})
+  }
+
+  postData=()=>{
+    const {ListReducer:{currentPooja}} = this.props;
+    const {phone_number,name,nakshatra,gotra,other_info} = this.state;
+    this.props.savePoojaDetails(currentPooja.name,currentPooja.price,phone_number,name,nakshatra,gotra,other_info);
+  }
+
   render(){
     const {ListReducer:{formModal,currentPooja}} = this.props;
     return(
       <View>
         <Modal
-          animationType="fade"
           transparent={true}
           visible={formModal}
           onRequestClose={() => {this.props.showFormModal(false); this.props.getPooja({})}}
@@ -44,14 +64,14 @@ class ModalGenerator extends Component{
                 <View style={styles.modalContainer}>
                 <ScrollView>
                   <Text style={styles.nameText}>{currentPooja.name}</Text>
-                  <Text style={styles.priceText}>Amount: {currentPooja.price}</Text>
-                  <TextInput placeholder='Phone Number' keyboardType='numeric' style={styles.inputStyle}/>
-                  <TextInput placeholder='Name' style={styles.inputStyle}/>
-                  <TextInput placeholder='Nakshatra' style={styles.inputStyle}/>
-                  <TextInput placeholder='Gotra' style={styles.inputStyle}/>
-                  <TextInput placeholder='Other' maxLength = {100} multiline = {true} numberOfLines = {4} style={[styles.inputStyle,styles.textArea]}/>
+                  <Text style={styles.priceText}>Amount: ₹{currentPooja.price}</Text>
+                  <TextInput placeholder='Phone Number' keyboardType='numeric' style={styles.inputStyle} value={this.state.phone_number} onChangeText={value => this.onChangeText('phone_number',value)}/>
+                  <TextInput placeholder='Name' style={styles.inputStyle} value={this.state.name} onChangeText={value => this.onChangeText('name',value)}/>
+                  <TextInput placeholder='Nakshatra' style={styles.inputStyle} value={this.state.nakshatra} onChangeText={value => this.onChangeText('nakshatra',value)}/>
+                  <TextInput placeholder='Gotra' style={styles.inputStyle} value={this.state.gotra} onChangeText={value => this.onChangeText('gotra',value)}/>
+                  <TextInput placeholder='Other' maxLength = {100} multiline = {true} numberOfLines = {4} value={this.state.other_info} style={[styles.inputStyle,styles.textArea]} onChangeText={value => this.onChangeText('other_info',value)}/>
                   <Button
-                    onPress={()=>console.log('presses')}
+                    onPress={()=>this.postData()}
                     title="Submit"
                   />
                 </ScrollView>
@@ -72,7 +92,7 @@ const mapStateToProps=(state)=>{
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({getPooja,showFormModal},dispatch)
+  return bindActionCreators({getPooja,showFormModal,savePoojaDetails},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(ModalGenerator);

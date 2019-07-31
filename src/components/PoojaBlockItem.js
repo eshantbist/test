@@ -9,7 +9,7 @@ export const PoojaBlockItem = (props) =>{
     return(
           <TouchableOpacity style={[styles.item,{height: Dimensions.get('window').width / props.numColumns}]} onPress={()=>props.showDetail(props.item)}>
             <Text style={styles.itemText}>{props.item.keyword}</Text>
-            <Text style={styles.itemPrice}>{props.item.price}</Text>
+            <Text style={styles.itemPrice}>₹{props.item.price}</Text>
           </TouchableOpacity>
     )
   }
