@@ -18,12 +18,13 @@ import {
   TouchableWithoutFeedback,
   TextInput,
   Button,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import {PoojaListItem} from '../components/PoojaListItem'
 import {PoojaBlockItem} from '../components/PoojaBlockItem'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {getPooja,showFormModal,setInternetValues} from '../actions'
+import {getPooja,showFormModal,setInternetValues,syncAction,sync} from '../actions'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import ModalGenerator from './ModalGenerator'
@@ -31,6 +32,7 @@ import {availablePooja} from '../config'
 import styles from '../styles/PoojaListStyle'
 import SQLite from 'react-native-sqlite-storage';
 import NetInfo from "@react-native-community/netinfo";
+import SyncComponent from './SyncComponent'
 
 let db;
 
@@ -110,15 +112,15 @@ class PoojaList extends React.Component {
   componentDidMount() {
     NetInfo.isConnected.fetch().then((isConnected) => {
      NetInfo.isConnected.addEventListener(
-      'connectionChange',
-      this._handleConnectionChange
-   );
-});
+          'connectionChange',
+          this._handleConnectionChange,
+       );
+    });
   }
 
+
   _handleConnectionChange = (isConnected) => {
-    console.log(isConnected);
-    //this.props.setInternetValues();
+    this.props.setInternetValues();
   };
 
   componentWillUnmount() {
@@ -159,9 +161,10 @@ class PoojaList extends React.Component {
     this.setState({offline:false})
   }
 
+
   render() {
     const {ListReducer:{isListView}} = this.props;
-    const {InternetReducer:{internetState}} = this.props;
+    const {InternetReducer:{internetState,syncStatus}} = this.props;
     // if(internetState.isConnected == false || internetState.isInternetReachable == false ){
     //     return(
     //       <View style={styles.offlineContainer}>
@@ -170,6 +173,7 @@ class PoojaList extends React.Component {
     //       </View>
     //     )
     //   }
+      //this.sync(syncStatus);
       return(
         <SafeAreaView style={{flex:1}}>
           {isListView
@@ -196,6 +200,7 @@ class PoojaList extends React.Component {
             />
           }
           <ModalGenerator/>
+          <SyncComponent />
         </SafeAreaView>
       )
    }
@@ -206,7 +211,7 @@ const mapStateToProps=(state)=>{
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({showFormModal,getPooja,setInternetValues},dispatch)
+  return bindActionCreators({showFormModal,getPooja,setInternetValues,syncAction,sync},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(PoojaList);

@@ -19,16 +19,19 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import styles from '../styles/ModalGeneratorStyle'
 
+
+const initialState = {
+  phone_number:null,
+  name:'',
+  nakshatra:'',
+  gotra:'',
+  other_info:'',
+}
+
 class ModalGenerator extends Component{
   constructor(props){
     super(props);
-    this.state={
-      phone_number:null,
-      name:'',
-      nakshatra:'',
-      gotra:'',
-      other_info:'',
-    }
+    this.state=initialState;
   }
 
   onChangeText(key,value) {
@@ -39,6 +42,8 @@ class ModalGenerator extends Component{
     const {ListReducer:{currentPooja}} = this.props;
     const {phone_number,name,nakshatra,gotra,other_info} = this.state;
     this.props.savePoojaDetails(currentPooja.name,currentPooja.price,phone_number,name,nakshatra,gotra,other_info);
+    this.props.showFormModal(false);
+    this.setState(initialState);
   }
 
   render(){

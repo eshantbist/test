@@ -1,8 +1,19 @@
-import React, {Fragment} from 'react';
+import React, {Component} from 'react';
+import {SafeAreaView} from 'react-native'
 import {createStackNavigator, createAppContainer} from 'react-navigation';
+import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PoojaList from './src/containers/PoojaList'
+import SignIn from './src/containers/SignIn'
+import SignUp from './src/containers/SignUp'
 import PoojaDetail from './src/components/PoojaDetail'
 import Header from './src/containers/Header'
+import config from './src/aws-exports';
+import Amplify, { Auth } from 'aws-amplify';
+Amplify.configure(config);
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {getUser} from './src/actions'
 
 const AppNavigator = createStackNavigator({
   Home: {
@@ -19,6 +30,99 @@ const AppNavigator = createStackNavigator({
   }
 });
 
-const AppStack= createAppContainer(AppNavigator);
+const AuthStackNavigator = createMaterialBottomTabNavigator({
+  SignIn: { screen: SignIn },
+  SignUp: { screen: SignUp }
+}, {
+    defaultNavigationOptions: ({ navigation }) => ({
+    tabBarIcon: ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'SignIn') {
+          iconName = `sign-in`;
+        } else if (routeName === 'SignUp') {
+          iconName = `user-plus`;
+        }
+        return <FontAwesome name={iconName} size={20} color={tintColor} />;
+      },
+    }),
+    activeTintColor: 'white',
+    animationEnabled: true,
+    shifting: true,
+});
 
-export default AppStack;
+const AuthStackContainer = createAppContainer(AuthStackNavigator);
+
+const StackContainer= createAppContainer(AppNavigator);
+
+class AppStack extends Component {
+  state = {
+    user: {},
+    isLoading: true
+  }
+
+  async componentDidMount() {
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      console.log(user);
+      this.setState({ user, isLoading: false })
+    } catch (err) {
+      console.log(err);
+      this.setState({isLoading: false })
+    }
+  }
+
+  async componentWillReceiveProps(nextProps) {
+    try {
+      const user = await Auth.currentAuthenticatedUser()
+      this.setState({ user })
+    } catch (err) {
+      this.setState({ user: {} })
+    }
+  }
+
+  // componentDidMount() {
+  //   this.props.getUser();
+  // }
+  //
+  // static getDerivedStateFromProps(nextProps, prevState){
+  //     console.log(nextProps);
+  //     console.log(prevState);
+  //     if (nextProps.SignInReducer !== prevState.SignInReducer) {
+  //         //this.props.getUser();
+  //         return true;
+  //     }
+  //     else return null; // Triggers no change in the state
+  // }
+
+
+  render() {
+    //const {UserReducer:{userLoading,user}} = this.props;
+    let loggedIn = false
+    if (this.state.user.username ) {
+      loggedIn = true
+    }
+    if (this.state.isLoading){
+      return null
+    }
+    if(loggedIn){
+      return (
+        <StackContainer />
+      )
+    }
+    return(
+       <AuthStackContainer/>
+    )
+  }
+}
+
+const mapStateToProps = state => ({
+  SignInReducer: state.SignInReducer,
+  UserReducer: state.UserReducer
+})
+
+const mapDispatchToProps=(dispatch)=>{
+  return bindActionCreators({getUser},dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(AppStack)

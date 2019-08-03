@@ -1,12 +1,29 @@
 import React,{Component} from 'react';
 import {View,Text,SafeAreaView,TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {change_list_view} from '../actions'
+import {change_list_view,signOut} from '../actions'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import styles from '../styles/HeaderStyle'
 
 class Header extends Component{
+  logOut = () => {
+    // Auth.signOut()
+    //   .then(() => {
+    //     this.props.logOut();
+    //     this.props.removeList();
+    //     this._removeData();
+    //   })
+    //   .catch(err => {
+    //     console.log('err: ', err)
+    //   })
+    //   Alert.alert(
+    //     '',
+    //     "Logged Out Successfully"
+    //   )
+    this.props.signOut();
+  };
+
   render(){
     const text = "POOJA'S AVAILABLE";
     const {ListReducer:{isListView}} = this.props;
@@ -22,7 +39,9 @@ class Header extends Component{
               <FontAwesome style={styles.icon} name='list'/>
             </TouchableOpacity>}
          <Text style={styles.headerText}>{text}</Text>
-         <View></View>
+         <TouchableOpacity style={[styles.iconTouch,{marginRight:5}]} onPress={()=>this.logOut()}>
+           <FontAwesome style={[styles.icon,{left:2,fontSize:20}]} name='sign-out'/>
+         </TouchableOpacity>
       </SafeAreaView>
     )
   }
@@ -33,7 +52,7 @@ const mapStateToProps=(state)=>{
 }
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({change_list_view},dispatch)
+  return bindActionCreators({change_list_view,signOut},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Header);

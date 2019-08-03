@@ -35,6 +35,7 @@
 		D69094CCEEE64C11B1241B77 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 363ED50C56E44CC4BDFB4A6B /* AntDesign.ttf */; };
 		E81C4BDD084298E06BD320A2 /* libPods-MyPooja-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D003806D937A648124ED7F73 /* libPods-MyPooja-tvOS.a */; };
 		E873420451D64B39AB11D6EA /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7261123AB1F745648124592C /* Foundation.ttf */; };
+		EC07AF1522F2A187008C2CE6 /* www in Resources */ = {isa = PBXBuildFile; fileRef = EC07AF1422F2A186008C2CE6 /* www */; };
 		F0A4E2CDAB0843F589176A18 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8A5968E539B4033806526F1 /* Octicons.ttf */; };
 		F3E952AC029B4AF1938E4441 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE30375F26E74C0EAEB81F31 /* FontAwesome5_Brands.ttf */; };
 		FB762EAD7C21433C9133B29F /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2E79B4BB253484499402204 /* Feather.ttf */; };
@@ -101,6 +102,7 @@
 		D003806D937A648124ED7F73 /* libPods-MyPooja-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyPooja-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4BB5DBEA7CF0AAABDC26F92 /* libPods-MyPooja.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyPooja.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D6FAA7C32DA84EF7BF6FC51B /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		EC07AF1422F2A186008C2CE6 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F6BD4B1779744FCF93B9510E /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		13B07FAE1A68108700A75B9A /* MyPooja */ = {
 			isa = PBXGroup;
 			children = (
+				EC07AF1422F2A186008C2CE6 /* www */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -409,6 +412,7 @@
 				FB762EAD7C21433C9133B29F /* Feather.ttf in Resources */,
 				BDC7406992D8478ABD48FF36 /* FontAwesome.ttf in Resources */,
 				F3E952AC029B4AF1938E4441 /* FontAwesome5_Brands.ttf in Resources */,
+				EC07AF1522F2A187008C2CE6 /* www in Resources */,
 				9FD87C0AE5B3431884BD12AD /* FontAwesome5_Regular.ttf in Resources */,
 				A287966A75124C9F8F74C908 /* FontAwesome5_Solid.ttf in Resources */,
 				E873420451D64B39AB11D6EA /* Foundation.ttf in Resources */,

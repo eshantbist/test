@@ -1,14 +1,20 @@
 const initialState = {
-  internetState:{}
+  internetState:{},
+  syncStatus:'inProgress'
 }
 
 const ListReducer=(state=initialState,action)=>{
   switch (action.type) {
     case 'SET_INERNET_VALUE':
-    console.log(action.internetState);
     return{
       ...state,
       internetState:action.internetState
+    }
+
+    case 'SYNC_STATE_CHANGE':
+    return{
+      ...state,
+      syncStatus:action.value
     }
 
     default:
