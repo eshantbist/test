@@ -36,6 +36,11 @@ const SignInReducer=(state = initialState, action) => {
         ...state,
       }
 
+    case 'SUPPRESS_SIGNIN_ERRORS':
+      return{
+        signInError: false,
+      }
+
     default:
       return state
   }

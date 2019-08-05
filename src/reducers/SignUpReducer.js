@@ -3,6 +3,9 @@ const initialState = {
   signUpError:false,
   signUpErrorMessage:'',
   signUpConfirmationModal:false,
+  isConfirming:false,
+  confirmSignUpError:false,
+  confirmSignupErrorMessage:''
 }
 
 const SignInReducer=(state = initialState, action) => {
@@ -31,6 +34,39 @@ const SignInReducer=(state = initialState, action) => {
         signUpError: true,
         signUpErrorMessage: action.error,
         signUpConfirmationModal:false
+      }
+
+    case 'CONFIRM_SIGNUP':
+      return {
+        ...state,
+        isConfirming: true
+      }
+    case 'CONFIRM_SIGNUP_SUCCESS':
+      return {
+        ...state,
+        isConfirming: false,
+        signUpConfirmationModal: false,
+      }
+    case 'CONFIRM_SIGNUP_FAILURE':
+      return {
+        ...state,
+        isConfirming: false,
+        signUpConfirmationModal: true,
+        confirmSignUpError: true,
+        confirmSignupErrorMessage: action.error.message
+      }
+
+    case 'CLOSE_CONFIRMATION_MODAL':
+      return{
+        ...state,
+        signUpConfirmationModal: false,
+        confirmSignUpError: false,
+      }
+
+    case 'SUPPRESS_SIGNUP_ERRORS':
+      return{
+        ...state,
+        signUpError: false,
       }
 
     default:

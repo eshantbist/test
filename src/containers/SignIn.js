@@ -14,13 +14,15 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import styles from '../styles/SignInStyle';
-import {authenticate,logIn} from '../actions'
+import {authenticate,logIn,suppressLoginErrors} from '../actions'
 
 class SignIn extends Component {
 
   state={
     email:'',
     password:'',
+    eye:'eye-slash',
+    secureTextEntry:true,
   }
 
   onChangeText(key,value) {
@@ -35,6 +37,16 @@ class SignIn extends Component {
 
   suppressErrors=()=>{
     /*Call action to suppress error warning */
+    this.props.suppressLoginErrors();
+  }
+
+  eyeToggle=()=>{
+    if(this.state.eye==='eye-slash'){
+      this.setState({eye:'eye',secureTextEntry:false});
+    }
+    else {
+      this.setState({eye:'eye-slash',secureTextEntry:true});
+    }
   }
 
   render() {
@@ -66,12 +78,12 @@ class SignIn extends Component {
                     />
                   </View>
                   <TextInput
-                    placeholder="Email"
+                    placeholder='Chinmaya Registered Email'
                     value={email}
                     onChangeText={value => this.onChangeText('email',value)}
                     style={styles.input}
                     underlineColorAndroid="transparent"
-                    onBlur={()=>this.suppressErrors()}
+                    onFocus={()=>this.suppressErrors()}
                   />
                 </View>
                 <View style={styles.inputWrap}>
@@ -82,20 +94,31 @@ class SignIn extends Component {
                     />
                   </View>
                   <TextInput
-                    placeholder="password"
-                    secureTextEntry
+                    placeholder="Password"
+                    secureTextEntry={this.state.secureTextEntry}
                     value={password}
                     onChangeText={value => this.onChangeText('password',value)}
                     style={styles.input}
                     underlineColorAndroid="transparent"
                     onSubmitEditing={()=>{this.signIn()}}
-                    onBlur={()=>this.suppressErrors()}
+                    onFocus={()=>this.suppressErrors()}
                   />
+                  <View style={{paddingHorizontal: 10,alignItems: "center",justifyContent: "center"}}>
+                    <TouchableOpacity onPress={()=>this.eyeToggle()}>
+                      <FontAwesome
+                        name={this.state.eye}
+                        style={{width: 20,height: 20,fontSize:20,color:'#E57373'}}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <TouchableOpacity activeOpacity={.5} onPress={()=>{this.signIn()}}>
                   <View style={styles.button}>
                     <Text style={styles.buttonText}>Sign In</Text>
                   </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{alignItems:'center'}} onPress={()=>this.props.navigation.navigate('ForgotPassword')}>
+                  <Text style={{fontSize:15,color:'#1a53ff'}}>Forgot Password?</Text>
                 </TouchableOpacity>
               </KeyboardAvoidingView>
             <View style={styles.container} />
@@ -115,7 +138,8 @@ const mapStateToProps=(state)=>{
 const mapDispatchToProps=(dispatch)=>{
   return bindActionCreators({
     authenticate,
-    logIn
+    logIn,
+    suppressLoginErrors
   },dispatch)
 }
 

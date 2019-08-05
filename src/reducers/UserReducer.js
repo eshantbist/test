@@ -1,19 +1,28 @@
 const initialState = {
-  userLoading:true,
-  user:{},
+  userLoading:false,
+  poojaAvailable:[],
+  templeInfo:[],
+
 }
 
 const UserReducer=(state=initialState,action)=>{
   switch (action.type) {
-    case 'GET_USER':
+    case 'FETCH_USER_INFO':
     return{
-      user:action.user,
-      userLoading:false
+      userLoading:true
     }
 
-    case 'NO_USER_FOUND':
+    case 'FETCH_USER_INFO_SUCCESS':
     return{
-      user:{},
+      ...state,
+      poojaAvailable:action.info.pooja_available,
+      templeInfo:action.info.temple,
+      userLoading:false,
+    }
+
+    case 'FETCH_USER_INFO_FAILURE':
+    return{
+      ...state,
       userLoading:false
     }
 

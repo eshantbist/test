@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {SafeAreaView} from 'react-native'
-import {createStackNavigator, createAppContainer} from 'react-navigation';
+import {createStackNavigator, createAppContainer,createSwitchNavigator} from 'react-navigation';
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PoojaList from './src/containers/PoojaList'
 import SignIn from './src/containers/SignIn'
 import SignUp from './src/containers/SignUp'
+import ForgotPassword from './src/containers/ForgotPassword'
 import PoojaDetail from './src/components/PoojaDetail'
 import Header from './src/containers/Header'
 import config from './src/aws-exports';
@@ -13,7 +14,7 @@ import Amplify, { Auth } from 'aws-amplify';
 Amplify.configure(config);
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getUser} from './src/actions'
+import {getUser,fetchUserDetails} from './src/actions'
 
 const AppNavigator = createStackNavigator({
   Home: {
@@ -30,7 +31,7 @@ const AppNavigator = createStackNavigator({
   }
 });
 
-const AuthStackNavigator = createMaterialBottomTabNavigator({
+const AuthNavigator = createMaterialBottomTabNavigator({
   SignIn: { screen: SignIn },
   SignUp: { screen: SignUp }
 }, {
@@ -51,6 +52,11 @@ const AuthStackNavigator = createMaterialBottomTabNavigator({
     shifting: true,
 });
 
+const AuthStackNavigator = createSwitchNavigator({
+  Auth: { screen: AuthNavigator },
+  ForgotPassword: {screen: ForgotPassword}
+});
+
 const AuthStackContainer = createAppContainer(AuthStackNavigator);
 
 const StackContainer= createAppContainer(AppNavigator);
@@ -64,7 +70,9 @@ class AppStack extends Component {
   async componentDidMount() {
     try {
       const user = await Auth.currentAuthenticatedUser()
-      console.log(user);
+      if(user.username){
+        this.props.fetchUserDetails(user.attributes.email);
+      }
       this.setState({ user, isLoading: false })
     } catch (err) {
       console.log(err);
@@ -97,7 +105,6 @@ class AppStack extends Component {
 
 
   render() {
-    //const {UserReducer:{userLoading,user}} = this.props;
     let loggedIn = false
     if (this.state.user.username ) {
       loggedIn = true
@@ -117,12 +124,11 @@ class AppStack extends Component {
 }
 
 const mapStateToProps = state => ({
-  SignInReducer: state.SignInReducer,
-  UserReducer: state.UserReducer
+  SignInReducer: state.SignInReducer
 })
 
 const mapDispatchToProps=(dispatch)=>{
-  return bindActionCreators({getUser},dispatch);
+  return bindActionCreators({getUser,fetchUserDetails},dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(AppStack)

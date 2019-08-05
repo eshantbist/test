@@ -19,7 +19,8 @@ import {
   TextInput,
   Button,
   Image,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native';
 import {PoojaListItem} from '../components/PoojaListItem'
 import {PoojaBlockItem} from '../components/PoojaBlockItem'
@@ -165,6 +166,7 @@ class PoojaList extends React.Component {
   render() {
     const {ListReducer:{isListView}} = this.props;
     const {InternetReducer:{internetState,syncStatus}} = this.props;
+    const {UserReducer:{poojaAvailable,templeInfo,userLoading}} = this.props;
     // if(internetState.isConnected == false || internetState.isInternetReachable == false ){
     //     return(
     //       <View style={styles.offlineContainer}>
@@ -174,6 +176,13 @@ class PoojaList extends React.Component {
     //     )
     //   }
       //this.sync(syncStatus);
+      if(userLoading){
+        return(
+          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )
+      }
       return(
         <SafeAreaView style={{flex:1}}>
           {isListView
@@ -182,7 +191,7 @@ class PoojaList extends React.Component {
               <Content>
                 <List>
                 <FlatList
-                  data={availablePooja}
+                  data={poojaAvailable}
                   ref={(c) => {this.flatList = c;}}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({item}) => <PoojaListItem showDetail={(item)=>this.showDetail(item)} item={item} />}
@@ -192,7 +201,7 @@ class PoojaList extends React.Component {
             </Container>
             :
             <FlatList
-              data={formatData(availablePooja, numColumns)}
+              data={formatData(poojaAvailable, numColumns)}
               style={styles.container}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => <PoojaBlockItem numColumns={numColumns} showDetail={(item)=>this.showDetail(item)} item={item} />}
@@ -207,7 +216,7 @@ class PoojaList extends React.Component {
 }
 
 const mapStateToProps=(state)=>{
-  return {ListReducer:state.ListReducer,InternetReducer:state.InternetReducer};
+  return {ListReducer:state.ListReducer,InternetReducer:state.InternetReducer,UserReducer:state.UserReducer};
 }
 
 const mapDispatchToProps=(dispatch)=>{

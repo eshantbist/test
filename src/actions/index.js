@@ -5,7 +5,7 @@ import {SHOW_FORM_MODAL,CHANGE_LIST_VIEW, SET_POOJA} from './actionTypes';
 import {SYNC_STATE_CHANGE,SET_INERNET_VALUE} from './actionTypes';
 
 /*Action-Types For SignIn*/
-import {LOG_IN,LOG_IN_SUCCESS,LOG_IN_FAILURE} from './actionTypes';
+import {LOG_IN,LOG_IN_SUCCESS,LOG_IN_FAILURE,SUPPRESS_SIGNIN_ERRORS} from './actionTypes';
 
 /*Action-Types For LogOut*/
 import {LOG_OUT} from './actionTypes';
@@ -14,7 +14,16 @@ import {LOG_OUT} from './actionTypes';
 import {GET_USER,NO_USER_FOUND} from './actionTypes';
 
 /*Action-Types For SignUp*/
-import {SIGN_UP,SIGN_UP_FAILURE,SIGN_UP_SUCCESS} from './actionTypes';
+import {SIGN_UP,SIGN_UP_FAILURE,SIGN_UP_SUCCESS,SUPPRESS_SIGNUP_ERRORS} from './actionTypes';
+
+/*Action-Types For SignUp confirmation*/
+import {CONFIRM_SIGNUP,CONFIRM_SIGNUP_SUCCESS,CONFIRM_SIGNUP_FAILURE,CLOSE_CONFIRMATION_MODAL} from './actionTypes';
+
+/*Action-Types For fetching user details*/
+import {FETCH_USER_INFO,FETCH_USER_INFO_FAILURE,FETCH_USER_INFO_SUCCESS} from './actionTypes';
+
+/*Action-Types For forgot password*/
+import {FORGOT_PASSWORD,FORGOT_PASSWORD_SUCCESS,FORGOT_PASSWORD_FAILURE} from './actionTypes';
 
 import NetInfo from "@react-native-community/netinfo";
 import SQLite from 'react-native-sqlite-storage';
@@ -272,20 +281,15 @@ export function authenticate(email, password) {
       .then(user => {
         Auth.currentAuthenticatedUser()
         .then(user => {
-          Auth.currentSession()
-            .then(data => {
-              if(user.attributes.name=='User'){
-                Auth.signOut();
-              }
-              else {
-                console.log(user);
-                dispatch(logInSuccess())
-              }
-            })
-            .catch(err => console.log(err));
+          if(user.attributes.name=='User'){
+            Auth.signOut();
+          }
+          else {
+            dispatch(fetchUserDetails(lowerCaseEmail));
+            dispatch(logInSuccess())
+          }
         })
         .catch(err => console.log(err));
-
       })
       .catch(err => {
         console.log(err);
@@ -323,6 +327,132 @@ function logInFailure(error) {
   return {
     type: LOG_IN_FAILURE,
     error
+  }
+}
+
+export function suppressLoginErrors(){
+  return{
+    type: SUPPRESS_SIGNIN_ERRORS,
+  }
+}
+
+export function userForgotPassword(email){
+  let lowerCaseEmail=email.toLowerCase();
+  lowerCaseEmail =lowerCaseEmail.trim(lowerCaseEmail);
+  return (dispatch) => {
+    dispatch(forgotPassword())
+    Auth.forgotPassword(lowerCaseEmail)
+      .then(data =>
+        dispatch(forgotPasswordSuccess())
+      )
+      .catch(err => {
+        console.log(err);
+        dispatch(forgotPasswordFailure(err))
+      });
+  }
+}
+
+function forgotPassword(){
+  return{
+    type:FORGOT_PASSWORD
+  }
+}
+
+function forgotPasswordSuccess(){
+  return{
+    type:FORGOT_PASSWORD_SUCCESS
+  }
+}
+
+function forgotPasswordFailure(error){
+  return{
+    type:FORGOT_PASSWORD_FAILURE,
+    error
+  }
+}
+
+export function confirmNewPassword(email,code,new_password){
+  let lowerCaseEmail=email.toLowerCase();
+  lowerCaseEmail =lowerCaseEmail.trim(lowerCaseEmail);
+  return (dispatch) => {
+    dispatch(confirmForgotPassword())
+    Auth.forgotPasswordSubmit(lowerCaseEmail, code, new_password)
+    .then(data =>
+      {
+        dispatch(confirmForgotPasswordSuccess())
+    })
+    .catch(err => {
+        console.log(err);
+        dispatch(confirmForgotPasswordFailure(err))
+    });
+  }
+}
+
+function confirmForgotPassword(){
+  return{
+    type:'CONFIRM_FORGOT_PASSWORD'
+  }
+}
+
+function confirmForgotPasswordSuccess(){
+  return{
+    type:'CONFIRM_FORGOT_PASSWORD_SUCCESS'
+  }
+}
+
+function confirmForgotPasswordFailure(error){
+  return{
+    type:'CONFIRM_FORGOT_PASSWORD_FAILURE',
+    error
+  }
+}
+
+
+
+/*Actions For Fetching user details*/
+export function fetchUserDetails(lowerCaseEmail){
+  return(dispatch)=>{
+    dispatch(fetchUserInfo());
+    fetch('http://echoes.staging.chinmayamission.com/wp-json/gcmw/v1/get-user-temple',
+      {
+        method: 'POST',
+        headers: {
+          'Accept':       'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({username:lowerCaseEmail}),
+      })
+    .then(response => {
+       response.json()
+      .then(json => {
+          dispatch(fetchUserInfoSuccess(json));
+      })
+      .catch(err => {
+          console.log(err)
+      })
+    })
+    .catch(err=>{
+      dispatch(fetchUserInfoFailure());
+    })
+  }
+}
+
+function fetchUserInfo(){
+  return {
+    type: FETCH_USER_INFO,
+  }
+}
+
+function fetchUserInfoSuccess(info){
+  return {
+    type: FETCH_USER_INFO_SUCCESS,
+    info
+  }
+}
+
+function fetchUserInfoFailure(){
+  return {
+    type: FETCH_USER_INFO_FAILURE,
   }
 }
 
@@ -370,13 +500,10 @@ export function createUser(email, password, fullname) {
           console.log(err);
           if(err.name==='UserNotFoundException')
           {
-               console.log(lowerCaseEmail);
-               console.log(password);
-               console.log(name);
                /*aws-amplify signup function*/
                Auth.signUp({
-                      lowerCaseEmail,
-                      password,
+                      username:lowerCaseEmail,
+                      password:password,
                       attributes: {
                         name:name,
                       }
@@ -449,6 +576,54 @@ function signUpSuccess(user) {
 function signUpFailure(error) {
   return {
     type: SIGN_UP_FAILURE,
+    error
+  }
+}
+
+export function closeConfirmationModal(){
+  return{
+    type:CLOSE_CONFIRMATION_MODAL,
+  }
+}
+
+export function suppressSignUpErrors(){
+  return{
+    type:SUPPRESS_SIGNUP_ERRORS
+  }
+}
+
+export function confirmUserSignUp(email, authCode) {
+  let lowerCaseEmail=email.toLowerCase();
+  lowerCaseEmail =lowerCaseEmail.trim(lowerCaseEmail);
+  return (dispatch) => {
+    dispatch(confirmSignUp())
+    Auth.confirmSignUp(lowerCaseEmail, authCode)
+      .then(data => {
+        console.log('data from confirmSignUp: ', data)
+        dispatch(confirmSignUpSuccess())
+      })
+      .catch(err => {
+        console.log(err);
+        dispatch(confirmSignUpFailure(err))
+      });
+  }
+}
+
+function confirmSignUp() {
+  return {
+    type: CONFIRM_SIGNUP
+  }
+}
+
+function confirmSignUpSuccess() {
+  return {
+    type: CONFIRM_SIGNUP_SUCCESS
+  }
+}
+
+function confirmSignUpFailure(error) {
+  return {
+    type: CONFIRM_SIGNUP_FAILURE,
     error
   }
 }

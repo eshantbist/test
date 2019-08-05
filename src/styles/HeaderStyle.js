@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
     fontSize:17,
     fontWeight:'600',
     padding:10,
-    marginRight:40
   },
   iconTouch:{
     alignItems:'center',
