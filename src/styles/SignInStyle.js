@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#0088cc"
+    backgroundColor: "#1a8cff"
   },
   icon: {
     width: 20,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     color:'white'
   },
   button: {
-    backgroundColor: "#0088cc",
+    backgroundColor: "#1a8cff",
     paddingVertical: 15,
     marginVertical: 15,
     alignItems: "center",
@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFF",
-    fontSize: 18
+    fontSize: 18,
+    fontWeight:'700'
   },
   forgotpasswordText: {
     color: "#FFF",

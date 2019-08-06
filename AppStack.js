@@ -47,7 +47,8 @@ const AuthNavigator = createMaterialBottomTabNavigator({
         return <FontAwesome name={iconName} size={20} color={tintColor} />;
       },
     }),
-    activeTintColor: 'white',
+    activeColor: 'tomato',
+    barStyle: { backgroundColor: '#FFF' },
     animationEnabled: true,
     shifting: true,
 });
@@ -88,7 +89,7 @@ class AppStack extends Component {
      .catch(err=>{
        console.log(err);
      })
-     
+
     try {
       const user = await Auth.currentAuthenticatedUser()
       if(user.username){

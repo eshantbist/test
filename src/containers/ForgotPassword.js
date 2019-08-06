@@ -41,13 +41,13 @@ class ForgotPassword extends Component {
         style={[styles.background, styles.container]}
       >
         <View style={styles.container}>
-            <View style={[{flexDirection:'row',justifyContent:'space-between',backgroundColor:"#bfbfbf",padding:10}]}>
+            <View style={[{flexDirection:'row',justifyContent:'space-between',padding:10,borderBottomWidth:0.5,borderColor:'gray'}]}>
+              <View style={{flex:1}}>
               <TouchableOpacity style={{flexDirection:'row'}} onPress={()=>this.props.navigation.navigate('Auth')}>
-                <FontAwesome name={'chevron-left'} style={{fontSize:20,marginRight:5,color:'#004466'}}/>
-                <Text style={{fontSize:17,color:'#004466'}}>Back</Text>
+                <FontAwesome name={'chevron-left'} style={{fontSize:20,marginRight:5,color:'#0066ff'}}/>
+                <Text style={{fontSize:17,color:'#0066ff'}}>Back</Text>
               </TouchableOpacity>
-              <Text style={{fontSize:18,marginRight:50,fontWeight:'500',color:'#004466'}}>Forgot Password</Text>
-              <View/>
+              </View>
             </View>
             <View style={styles.container} />
             <KeyboardAvoidingView style={[styles.wrapper,{marginBottom:50}]} behavior={"padding"} keyboardVerticalOffset={10} enabled>
