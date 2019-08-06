@@ -14,11 +14,11 @@ export const PoojaListItem = (props) =>{
     return(
           <ListItem thumbnail onPress={()=>props.showDetail(props.item)}>
             <Left>
-              <Thumbnail square source={props.item.image} />
+              <Thumbnail square source={require('../img/image.png')} />
             </Left>
             <Body>
-              <Text>{props.item.name}</Text>
-              <Text note>{props.item.description}</Text>
+              <Text>{props.item.title}</Text>
+              <Text note>₹{props.item.price}</Text>
             </Body>
             <Right>
               <Icon color="grey" name="arrow-circle-right" size={20}/>

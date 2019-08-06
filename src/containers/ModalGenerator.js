@@ -68,8 +68,8 @@ class ModalGenerator extends Component{
               <TouchableWithoutFeedback>
                 <View style={styles.modalContainer}>
                 <ScrollView>
-                  <Text style={styles.nameText}>{currentPooja.name}</Text>
-                  <Text style={styles.priceText}>Amount: ₹{currentPooja.price}</Text>
+                  <Text style={styles.nameText}>{currentPooja.title}</Text>
+                  <Text style={styles.priceText}>Amount: ₹{currentPooja.const}</Text>
                   <TextInput placeholder='Phone Number' keyboardType='numeric' style={styles.inputStyle} value={this.state.phone_number} onChangeText={value => this.onChangeText('phone_number',value)}/>
                   <TextInput placeholder='Name' style={styles.inputStyle} value={this.state.name} onChangeText={value => this.onChangeText('name',value)}/>
                   <TextInput placeholder='Nakshatra' style={styles.inputStyle} value={this.state.nakshatra} onChangeText={value => this.onChangeText('nakshatra',value)}/>

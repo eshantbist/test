@@ -27,7 +27,7 @@ import {FORGOT_PASSWORD,FORGOT_PASSWORD_SUCCESS,FORGOT_PASSWORD_FAILURE} from '.
 
 import NetInfo from "@react-native-community/netinfo";
 import SQLite from 'react-native-sqlite-storage';
-import {Platform,Alert} from 'react-native';
+import {Platform,Alert,AsyncStorage} from 'react-native';
 import Amplify, { Auth } from 'aws-amplify';
 import config from '../aws-exports';
 Amplify.configure(config)
@@ -292,7 +292,6 @@ export function authenticate(email, password) {
         .catch(err => console.log(err));
       })
       .catch(err => {
-        console.log(err);
         if(err.name==='UserNotConfirmedException')
         {
           Auth.resendSignUp(email)
@@ -413,27 +412,51 @@ function confirmForgotPasswordFailure(error){
 export function fetchUserDetails(lowerCaseEmail){
   return(dispatch)=>{
     dispatch(fetchUserInfo());
-    fetch('http://echoes.staging.chinmayamission.com/wp-json/gcmw/v1/get-user-temple',
-      {
-        method: 'POST',
+    // fetch('http://echoes.staging.chinmayamission.com/wp-json/gcmw/v1/get-user-temple',
+    //   {
+    //     method: 'POST',
+    //     headers: {
+    //       'Accept':       'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({username:lowerCaseEmail}),
+    //   })
+    // .then(response => {
+    //    response.json()
+    //   .then(json => {
+    //       AsyncStorage.setItem('availablePooja',JSON.stringify(json));
+    //       dispatch(fetchUserInfoSuccess(json));
+    //   })
+    //   .catch(err => {
+    //       console.log(err)
+    //   })
+    // })
+    // .catch(err=>{
+    //   dispatch(fetchUserInfoFailure());
+    // })
+
+    fetch('https://5fd3dqj2dc.execute-api.us-east-1.amazonaws.com/v2/forms/5d4904fc7964b10001d0987e',{
+        method:'GET',
         headers: {
           'Accept':       'application/json',
           'Content-Type': 'application/json',
+          'Authorization': 'anonymus'
         },
-        body: JSON.stringify({username:lowerCaseEmail}),
       })
-    .then(response => {
+     .then(response=>{
        response.json()
-      .then(json => {
-          dispatch(fetchUserInfoSuccess(json));
-      })
-      .catch(err => {
-          console.log(err)
-      })
-    })
-    .catch(err=>{
-      dispatch(fetchUserInfoFailure());
-    })
+       .then(json=>{
+         AsyncStorage.setItem('availablePooja',JSON.stringify(json.res.schema.properties));
+         console.log(json.res.schema.properties);
+         dispatch(fetchUserInfoSuccess(json.res.schema.properties));
+       })
+       .catch(err=>{
+         dispatch(fetchUserInfoFailure());
+       })
+     })
+     .catch(err=>{
+       dispatch(fetchUserInfoFailure());
+     })
   }
 }
 

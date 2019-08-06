@@ -8,7 +8,7 @@ import SignIn from './src/containers/SignIn'
 import SignUp from './src/containers/SignUp'
 import ForgotPassword from './src/containers/ForgotPassword'
 import PoojaDetail from './src/components/PoojaDetail'
-import Header from './src/containers/Header'
+import PoojaListHeader from './src/containers/PoojaListHeader'
 import config from './src/aws-exports';
 import Amplify, { Auth } from 'aws-amplify';
 Amplify.configure(config);
@@ -20,7 +20,7 @@ const AppNavigator = createStackNavigator({
   Home: {
     screen: PoojaList,
     navigationOptions: ({navigation}) => ({
-      header : <Header navigation={navigation}/>,
+      header : <PoojaListHeader navigation={navigation}/>,
     }),
   },
   Detail: {
@@ -68,6 +68,27 @@ class AppStack extends Component {
   }
 
   async componentDidMount() {
+    fetch('https://5fd3dqj2dc.execute-api.us-east-1.amazonaws.com/v2/forms/5d4904fc7964b10001d0987e',{
+        method:'GET',
+        headers: {
+          'Accept':       'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'anonymus'
+        },
+      })
+     .then(response=>{
+       response.json()
+       .then(json=>{
+         console.log(json.res.schema.properties);
+       })
+       .catch(err=>{
+         console.log(err);
+       })
+     })
+     .catch(err=>{
+       console.log(err);
+     })
+     
     try {
       const user = await Auth.currentAuthenticatedUser()
       if(user.username){

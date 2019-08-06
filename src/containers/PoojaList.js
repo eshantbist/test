@@ -167,6 +167,7 @@ class PoojaList extends React.Component {
     const {ListReducer:{isListView}} = this.props;
     const {InternetReducer:{internetState,syncStatus}} = this.props;
     const {UserReducer:{poojaAvailable,templeInfo,userLoading}} = this.props;
+    console.log(poojaAvailable);
     // if(internetState.isConnected == false || internetState.isInternetReachable == false ){
     //     return(
     //       <View style={styles.offlineContainer}>
@@ -191,7 +192,7 @@ class PoojaList extends React.Component {
               <Content>
                 <List>
                 <FlatList
-                  data={poojaAvailable}
+                  data={Object.values(poojaAvailable)}
                   ref={(c) => {this.flatList = c;}}
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({item}) => <PoojaListItem showDetail={(item)=>this.showDetail(item)} item={item} />}
@@ -201,7 +202,7 @@ class PoojaList extends React.Component {
             </Container>
             :
             <FlatList
-              data={formatData(poojaAvailable, numColumns)}
+              data={formatData(Object.values(poojaAvailable), numColumns)}
               style={styles.container}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => <PoojaBlockItem numColumns={numColumns} showDetail={(item)=>this.showDetail(item)} item={item} />}

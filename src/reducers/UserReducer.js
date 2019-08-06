@@ -15,8 +15,8 @@ const UserReducer=(state=initialState,action)=>{
     case 'FETCH_USER_INFO_SUCCESS':
     return{
       ...state,
-      poojaAvailable:action.info.pooja_available,
-      templeInfo:action.info.temple,
+      poojaAvailable:action.info.PujaList,
+      templeInfo:action.info.CentreName,
       userLoading:false,
     }
 
