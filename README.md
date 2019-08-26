@@ -1,1 +1,2 @@
 # MyPooja
+Chinmaya Kiosk App
